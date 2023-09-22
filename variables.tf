@@ -144,3 +144,5 @@ variable "ssh_public_key" {
 variable "defined_tags" {
   default = {}
 }
+
+variable "pod_subnet_ids" {}
