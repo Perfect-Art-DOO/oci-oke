@@ -19,6 +19,13 @@ resource "oci_containerengine_cluster" "oci_oke_cluster" {
     }
   }
 
+  dynamic "cluster_pod_network_options" {
+    for_each = var.vcn_native ? [1] : []
+    content {
+            cni_type = "OCI_VCN_IP_NATIVE"
+    }
+  }
+
   options {
     service_lb_subnet_ids = [var.use_existing_vcn ? var.lb_subnet_id : oci_core_subnet.oke_lb_subnet[0].id]
 
@@ -37,6 +44,9 @@ resource "oci_containerengine_cluster" "oci_oke_cluster" {
     }
   }
   defined_tags = var.defined_tags
+  lifecycle {
+    ignore_changes = [ defined_tags ]
+  }
 }
 
 resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
@@ -59,13 +69,38 @@ resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
 
   ssh_public_key = var.ssh_public_key != "" ? var.ssh_public_key : tls_private_key.public_private_key_pair.public_key_openssh
 
-  node_config_details {
-    placement_configs {
-      availability_domain = var.availability_domain == "" ? data.oci_identity_availability_domains.ADs.availability_domains[0]["name"] : var.availability_domain
-      subnet_id           = var.use_existing_vcn ? var.nodepool_subnet_id : oci_core_subnet.oke_nodepool_subnet[0].id
+  dynamic "node_config_details" {
+    for_each = var.vcn_native ? [1] : []
+    content {
+      node_pool_pod_network_option_details {
+        #Required
+        cni_type = "OCI_VCN_IP_NATIVE"
+        pod_subnet_ids = var.pod_subnet_ids
+
+        # OPtional
+        # max_pods_per_node = var.oke["max_pods_per_node"]
+        # pod_nsg_ids = var.node_pool_node_config_details_node_pool_pod_network_option_details_pod_nsg_ids
+      }
+      placement_configs {
+        availability_domain = var.availability_domain == "" ? data.oci_identity_availability_domains.ADs.availability_domains[0]["name"] : var.availability_domain
+        subnet_id           = var.use_existing_vcn ? var.nodepool_subnet_id : oci_core_subnet.oke_nodepool_subnet[0].id
+      }
+      size = var.node_count
+      defined_tags = var.defined_tags
     }
-    size = var.node_count
-    defined_tags = var.defined_tags
+  }
+
+  # If not vcn native
+  dynamic "node_config_details" {
+    for_each = var.vcn_native ? [] : [1]
+    content {
+      placement_configs {
+        availability_domain = var.availability_domain == "" ? data.oci_identity_availability_domains.ADs.availability_domains[0]["name"] : var.availability_domain
+        subnet_id           = var.use_existing_vcn ? var.nodepool_subnet_id : oci_core_subnet.oke_nodepool_subnet[0].id
+      }
+      size = var.node_count
+      defined_tags = var.defined_tags
+    }
   }
 
   dynamic "node_shape_config" {
@@ -76,6 +111,9 @@ resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
     }
   }
   defined_tags = var.defined_tags
+  lifecycle {
+    ignore_changes = [ defined_tags ]
+  }
 }
 
 
