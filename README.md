@@ -72,6 +72,7 @@ node_ocpus | If node_shape is Flex then you can define OCPUS.
 node_memory | If node_shape is Flex then you can define Memory.
 node_linux_version | Node Oracle Linux Version.
 node_count | Number of Nodes in the Pool.
+node_pool_type_preemptible | If true, creates preemptible nodes
 pods_cidr | K8S PODs CIDR
 services_cidr | K8S Services CIDR
 cluster_options_add_ons_is_kubernetes_dashboard_enabled | If you want to set cluster_options_add_ons_is_kubernetes_dashboard_enabled to TRUE.
@@ -79,4 +80,3 @@ cluster_options_add_ons_is_tiller_enabled | If you want to use Tiller then you n
 node_pool_initial_node_labels_key | You can pass here node_pool_initial_node_labels_key.
 node_pool_initial_node_labels_value | You can pass here node_pool_initial_node_labels_value.
 ssh_public_key | If you want to use your own SSH public key instead of generated onne by the module.
-

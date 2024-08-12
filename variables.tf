@@ -97,6 +97,10 @@ variable "node_memory" {
   default = 4
 }
 
+variable "node_pool_type_preemptible" {
+  default = false
+}
+
 variable "pods_cidr" {
   default = "10.1.0.0/16"
 }
