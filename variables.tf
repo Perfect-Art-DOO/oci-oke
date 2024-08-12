@@ -97,15 +97,8 @@ variable "node_memory" {
   default = 4
 }
 
-variable "node_pool_type" {
-  description = "Type of node pool: 'preemptible' or 'regular'"
-  type        = string
-  default     = "regular"
-
-  validation {
-    condition     = contains(["preemptible", "regular"], var.node_pool_type)
-    error_message = "Allowed values for node_pool_type are 'preemptible' or 'regular'."
-  }
+variable "node_pool_type_preemptible" {
+  default = false
 }
 
 variable "pods_cidr" {

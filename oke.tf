@@ -86,7 +86,7 @@ resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
         subnet_id           = var.use_existing_vcn ? var.nodepool_subnet_id : oci_core_subnet.oke_nodepool_subnet[0].id
 
         dynamic "preemptible_node_config" {
-          for_each = var.node_pool_type == "preemptible" ? [1] : []
+          for_each = var.node_pool_type_preemptible ? [1] : []
           content {
             preemption_action {
               type = "TERMINATE"
@@ -108,7 +108,7 @@ resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
         subnet_id           = var.use_existing_vcn ? var.nodepool_subnet_id : oci_core_subnet.oke_nodepool_subnet[0].id
 
         dynamic "preemptible_node_config" {
-          for_each = var.node_pool_type == "preemptible" ? [1] : []
+          for_each = var.node_pool_type_preemptible ? [1] : []
           content {
             preemption_action {
               type = "TERMINATE"
