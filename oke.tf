@@ -78,7 +78,7 @@ resource "oci_containerengine_node_pool" "oci_oke_node_pool" {
         pod_subnet_ids = var.pod_subnet_ids
 
         # OPtional
-        # max_pods_per_node = var.oke["max_pods_per_node"]
+        max_pods_per_node = var.oke["max_pods_per_node"]
         # pod_nsg_ids = var.node_pool_node_config_details_node_pool_pod_network_option_details_pod_nsg_ids
       }
       placement_configs {
